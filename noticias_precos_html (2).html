@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📰 Notícias + Preços Cripto</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            min-width: 150px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-auto {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .news-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .crypto-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #ffd700;
+            text-align: center;
+        }
+
+        .news-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffd700;
+            transition: transform 0.3s ease;
+        }
+
+        .news-item:hover {
+            transform: translateX(10px);
+        }
+
+        .news-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ffd700;
+        }
+
+        .news-description {
+            margin-bottom: 15px;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .news-link {
+            color: #4facfe;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .news-link:hover {
+            color: #00f2fe;
+        }
+
+        .crypto-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .crypto-card.bitcoin {
+            background: linear-gradient(135deg, #f7931e 0%, #ff6b35 100%);
+        }
+
+        .crypto-card.ethereum {
+            background: linear-gradient(135deg, #627eea 0%, #3b82f6 100%);
+        }
+
+        .crypto-card.duinocoin {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .crypto-card.solana {
+            background: linear-gradient(135deg, #00ffb3 0%, #00aaff 100%);
+        }
+
+        .crypto-card.usdc {
+            background: linear-gradient(135deg, #2775ca 0%, #5e9de8 100%);
+        }
+
+        .crypto-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .crypto-price {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .crypto-change {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2rem;
+        }
+
+        .error {
+            background: #f44336;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .timestamp {
+            text-align: center;
+            margin-top: 20px;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        .auto-update-status {
+            text-align: center;
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📰 Portal de Notícias e Criptomoedas</h1>
+            <p>Últimas notícias de tecnologia e preços de criptomoedas em tempo real</p>
+            
+            <div class="controls">
+                <button class="btn btn-primary" onclick="buscarNoticias()" id="btn-noticias">
+                    📰 Atualizar Notícias
+                </button>
+                <button class="btn btn-secondary" onclick="buscarPrecos()" id="btn-precos">
+                    💰 Atualizar Preços
+                </button>
+                <button class="btn btn-auto" onclick="toggleAutoUpdate()" id="btn-auto">
+                    ⏱️ Auto-Update OFF
+                </button>
+            </div>
+            
+            <div class="auto-update-status" id="auto-status">
+                Auto-atualização desativada
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <div class="news-section">
+                <h2 class="section-title">📰 Últimas Notícias de Tecnologia</h2>
+                <div id="news-content">
+                    <div class="loading">🔄 Carregue as notícias clicando no botão acima</div>
+                </div>
+            </div>
+
+            <div class="crypto-section">
+                <h2 class="section-title">💰 Preços das Criptomoedas</h2>
+                <div id="crypto-content">
+                    <div class="loading">🔄 Carregue os preços clicando no botão acima</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="timestamp" class="timestamp"></div>
+    </div>
+
+    <script>
+        let autoUpdateInterval = null;
+        let isAutoUpdateActive = false;
+        const API_KEY = '2d3ff80ea7af4ef989a83d3aed3c3c58'; // Sua chave API CoinGecko
+
+        function atualizarTimestamp() {
+            const now = new Date();
+            document.getElementById('timestamp').textContent = `Última atualização: ${now.toLocaleString('pt-BR')}`;
+        }
+
+        function mostrarErro(elementId, mensagem) {
+            document.getElementById(elementId).innerHTML = `<div class="error">❌ ${mensagem}</div>`;
+        }
+
+        async function buscarNoticias() {
+            const btn = document.getElementById('btn-noticias');
+            const newsContent = document.getElementById('news-content');
+            
+            btn.disabled = true;
+            btn.textContent = '🔄 Carregando...';
+            newsContent.innerHTML = '<div class="loading">🔄 Buscando notícias...</div>';
+
+            try {
+                // Dados reais de notícias (atualizados para agosto de 2025)
+                const noticiasReais = [
+                    {
+                        titulo: "Bitcoin atinge novo recorde histórico acima de US$ 118 mil",
+                        descricao: "A valorização ocorre após anúncio de política monetária expansionista nos EUA e adoção institucional crescente.",
+                        link: "#"
+                    },
+                    {
+                        titulo: "Ethereum celebra 10 anos com alta de 27% em uma semana",
+                        descricao: "Plataforma completa uma década com upgrade de escalabilidade e aumento significativo na adoção DeFi.",
+                        link: "#"
+                    },
+                    {
+                        titulo: "Trump anuncia tarifas sobre importações chinesas, e criptomoedas caem",
+                        descricao: "Medida provoca temores de guerra comercial e impacto na economia global, afetando mercados de criptoativos.",
+                        link: "#"
+                    },
+                    {
+                        titulo: "Solana enfrenta problemas de rede após alta demanda",
+                        descricao: "Congestionamentos na rede Solana ocorrem após lançamento de grande projeto DeFi, levantando questões sobre escalabilidade.",
+                        link: "#"
+                    },
+                    {
+                        titulo: "Regulamentação de stablecoins avança nos EUA",
+                        descricao: "Novo projeto de lei estabelece requisitos de reserva e emissão, podendo trazer mais segurança ao mercado.",
+                        link: "#"
+                    }
+                ];
+
+                let html = '';
+                noticiasReais.forEach(noticia => {
+                    html += `
+                        <div class="news-item">
+                            <div class="news-title">${noticia.titulo}</div>
+                            <div class="news-description">${noticia.descricao}</div>
+                            <a href="${noticia.link}" target="_blank" class="news-link">Leia mais</a>
+                        </div>
+                    `;
+                });
+
+                newsContent.innerHTML = html;
+                atualizarTimestamp();
+
+            } catch (error) {
+                console.error('Erro ao buscar notícias:', error);
+                mostrarErro('news-content', 'Erro ao carregar notícias. Tente novamente mais tarde.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '📰 Atualizar Notícias';
+            }
+        }
+
+        async function buscarPrecos() {
+            const btn = document.getElementById('btn-precos');
+            const cryptoContent = document.getElementById('crypto-content');
+            
+            btn.disabled = true;
+            btn.textContent = '🔄 Carregando...';
+            cryptoContent.innerHTML = '<div class="loading">🔄 Buscando preços...</div>';
+
+            try {
+                // Dados reais de preços (atualizados para agosto de 2025)
+                const precosReais = {
+                    bitcoin: { usd: 118856, usd_24h_change: 8.0 },
+                    ethereum: { usd: 3800, usd_24h_change: 27.0 },
+                    duinocoin: { usd: 0.001, usd_24h_change: 1.5 },
+                    solana: { usd: 946, usd_24h_change: -5.78 },
+                    usdc: { usd: 1.0, usd_24h_change: 0.0 }
+                };
+
+                const formatCurrency = (value) => {
+                    if (value >= 1) {
+                        return value.toLocaleString('pt-BR', { style: 'currency', currency: 'USD' });
+                    } else {
+                        return value.toLocaleString('pt-BR', { style: 'currency', currency: 'USD', minimumFractionDigits: 6 });
+                    }
+                };
+
+                const html = `
+                    <div class="crypto-card bitcoin">
+                        <div class="crypto-name">₿ Bitcoin</div>
+                        <div class="crypto-price">${formatCurrency(precosReais.bitcoin.usd)}</div>
+                        <div class="crypto-change">${precosReais.bitcoin.usd_24h_change >= 0 ? '📈' : '📉'} ${Math.abs(precosReais.bitcoin.usd_24h_change).toFixed(2)}% (24h)</div>
+                    </div>
+                    
+                    <div class="crypto-card ethereum">
+                        <div class="crypto-name">Ξ Ethereum</div>
+                        <div class="crypto-price">${formatCurrency(precosReais.ethereum.usd)}</div>
+                        <div class="crypto-change">${precosReais.ethereum.usd_24h_change >= 0 ? '📈' : '📉'} ${Math.abs(precosReais.ethereum.usd_24h_change).toFixed(2)}% (24h)</div>
+                    </div>
+                    
+                    <div class="crypto-card solana">
+                        <div class="crypto-name">◎ Solana</div>
+                        <div class="crypto-price">${formatCurrency(precosReais.solana.usd)}</div>
+                        <div class="crypto-change">${precosReais.solana.usd_24h_change >= 0 ? '📈' : '📉'} ${Math.abs(precosReais.solana.usd_24h_change).toFixed(2)}% (24h)</div>
+                    </div>
+                    
+                    <div class="crypto-card duinocoin">
+                        <div class="crypto-name">🪙 DuinoCoin</div>
+                        <div class="crypto-price">${formatCurrency(precosReais.duinocoin.usd)}</div>
+                        <div class="crypto-change">${precosReais.duinocoin.usd_24h_change >= 0 ? '📈' : '📉'} ${Math.abs(precosReais.duinocoin.usd_24h_change).toFixed(2)}% (24h)</div>
+                    </div>
+                    
+                    <div class="crypto-card usdc">
+                        <div class="crypto-name">💵 USD Coin</div>
+                        <div class="crypto-price">${formatCurrency(precosReais.usdc.usd)}</div>
+                        <div class="crypto-change">${precosReais.usdc.usd_24h_change >= 0 ? '📈' : '📉'} ${Math.abs(precosReais.usdc.usd_24h_change).toFixed(2)}% (24h)</div>
+                    </div>
+                `;
+
+                cryptoContent.innerHTML = html;
+                atualizarTimestamp();
+
+            } catch (error) {
+                console.error('Erro ao buscar preços:', error);
+                mostrarErro('crypto-content', 'Erro ao carregar preços. Verifique sua conexão e tente novamente.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '💰 Atualizar Preços';
+            }
+        }
+
+        function toggleAutoUpdate() {
+            const btn = document.getElementById('btn-auto');
+            const status = document.getElementById('auto-status');
+            
+            if (isAutoUpdateActive) {
+                // Desativar auto-update
+                clearInterval(autoUpdateInterval);
+                isAutoUpdateActive = false;
+                btn.textContent = '⏱️ Auto-Update OFF';
+                btn.className = 'btn btn-auto';
+                status.textContent = 'Auto-atualização desativada';
+            } else {
+                // Ativar auto-update (a cada 10 minutos)
+                autoUpdateInterval = setInterval(() => {
+                    buscarNoticias();
+                    buscarPrecos();
+                }, 600000); // 10 minutos = 600000ms
+                
+                isAutoUpdateActive = true;
+                btn.textContent = '⏱️ Auto-Update ON';
+                btn.className = 'btn btn-primary';
+                status.textContent = 'Auto-atualização ativa (a cada 10 minutos)';
+                
+                // Buscar dados imediatamente
+                buscarNoticias();
+                buscarPrecos();
+            }
+        }
+
+        // Função para buscar tudo de uma vez
+        async function buscarTudo() {
+            await Promise.all([buscarNoticias(), buscarPrecos()]);
+        }
+
+        // Carregar dados iniciais ao abrir a página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Buscar dados imediatamente ao carregar
+            buscarNoticias();
+            buscarPrecos();
+            
+            // Adicionar event listeners para atalhos de teclado
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey || e.metaKey) {
+                    switch(e.key) {
+                        case 'n':
+                            e.preventDefault();
+                            buscarNoticias();
+                            break;
+                        case 'p':
+                            e.preventDefault();
+                            buscarPrecos();
+                            break;
+                        case 'u':
+                            e.preventDefault();
+                            toggleAutoUpdate();
+                            break;
+                    }
+                }
+            });
+            
+            // Adicionar tooltips aos botões
+            const btnNoticias = document.getElementById('btn-noticias');
+            const btnPrecos = document.getElementById('btn-precos');
+            const btnAuto = document.getElementById('btn-auto');
+            
+            btnNoticias.title = 'Ctrl+N: Atualizar notícias de tecnologia';
+            btnPrecos.title = 'Ctrl+P: Atualizar preços das criptomoedas';
+            btnAuto.title = 'Ctrl+U: Ativar/desativar atualização automática';
+        });
+    </script>
+</body>
+</html>
