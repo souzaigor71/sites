@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot - Assistente Virtual</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+        }
+
+        .chatbot-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        #mcontext {
+            width: 100% !important;
+            height: 600px !important;
+            min-height: 600px !important;
+            border: none !important;
+            background: transparent !important;
+        }
+
+        /* Remove qualquer sobreposição */
+        #mcontext * {
+            pointer-events: auto !important;
+            user-select: auto !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🤖 Assistente Virtual</h1>
+        <p>Converse com nosso chatbot</p>
+    </div>
+
+    <div class="chatbot-wrapper">
+        <div id="mcontext"></div>
+    </div>
+
+    <!-- Script do Chatbot -->
+    <script 
+        mode="embed" 
+        isolate="true" 
+        themecolor="#2196f3" 
+        header="off" 
+        accentcolor="#000000" 
+        textcolor="white" 
+        id="webchat" 
+        src="https://cdn.machaao.com/prod/web/js/embed.js" 
+        type="text/javascript" 
+        mkey="NmU5M2RlMzAtNzIyYi0xMWYwLWJiNzQtYTEyYTAwYjg2Njhk" 
+        style="min-height: 600px;">
+    </script>
+
+    <script>
+        // Garantir que o chatbot seja totalmente interativo
+        window.addEventListener('load', function() {
+            console.log('Página carregada, verificando chatbot...');
+            
+            setTimeout(() => {
+                const mcontext = document.getElementById('mcontext');
+                if (mcontext) {
+                    // Force todas as propriedades para garantir interatividade
+                    mcontext.style.pointerEvents = 'auto';
+                    mcontext.style.userSelect = 'auto';
+                    mcontext.style.position = 'relative';
+                    mcontext.style.zIndex = '9999';
+                    
+                    // Aplicar às children também
+                    const allElements = mcontext.querySelectorAll('*');
+                    allElements.forEach(el => {
+                        el.style.pointerEvents = 'auto';
+                        el.style.userSelect = 'auto';
+                    });
+                    
+                    console.log('Chatbot configurado para interatividade');
+                }
+            }, 2000);
+        });
+
+        // Observer para monitorar mudanças no DOM do chatbot
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList') {
+                    const mcontext = document.getElementById('mcontext');
+                    if (mcontext) {
+                        // Reaplica as configurações sempre que houver mudanças
+                        const allElements = mcontext.querySelectorAll('*');
+                        allElements.forEach(el => {
+                            el.style.pointerEvents = 'auto';
+                            el.style.userSelect = 'auto';
+                        });
+                    }
+                }
+            });
+        });
+
+        // Inicia o observer
+        document.addEventListener('DOMContentLoaded', function() {
+            const mcontext = document.getElementById('mcontext');
+            if (mcontext) {
+                observer.observe(mcontext, {
+                    childList: true,
+                    subtree: true
+                });
+            }
+        });
+    </script>
+</body>
+</html>
